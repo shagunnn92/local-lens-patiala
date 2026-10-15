@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}Demo QR · {{ business['name'] }}{% endblock %}
+{% block content %}
+<div class="breadcrumb"><a href="{{ url_for('business_detail', business_id=business['id']) }}">{{ business['name'] }}</a><span>/</span><span>Demo QR</span></div>
+<section class="qr-layout"><div><p class="eyebrow">VISIT SIGNAL · PROTOTYPE</p><h1>Check in at<br>{{ business['name'] }}</h1><p>Scan this QR code to open the demo check-in page. A signed-in user can confirm a check-in, which is then shown separately from their self-declared Patiala membership.</p><div class="notice"><strong>Prototype limitation</strong><br>This static demo QR can be shared or reused. It records a check-in event; it does not prove a physical visit, residence, or purchase.</div><a class="text-link" href="{{ checkin_url }}">Open the check-in flow on this device →</a></div><div class="qr-card"><img src="{{ url_for('qr_image', business_id=business['id']) }}" alt="QR code for the demo check-in flow"><span>{{ business['neighborhood'] }} · Patiala</span><small>DEMO CHECK-IN</small></div></section>
+{% endblock %}

@@ -1,0 +1,3 @@
+{% extends "base.html" %}
+{% block title %}{{ code }} · LocalLens{% endblock %}
+{% block content %}<section class="error-screen"><p class="eyebrow">LOCAL LENS · PATIALA</p><div class="error-code">{{ code }}</div><h1>That didn’t work.</h1><p>{{ message }}</p><a class="button button-primary" href="{{ url_for('index') }}">Back to Explore</a></section>{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}{{ business['name'] }} · LocalLens{% endblock %}
+{% block content %}
+<div class="breadcrumb"><a href="{{ url_for('index') }}">Explore</a><span>/</span><span>{{ business['neighborhood'] }}</span></div>
+<section class="business-hero">
+  <div class="business-hero-icon">{{ business['category'][0] }}</div>
+  <div class="business-hero-copy"><p class="eyebrow">{{ business['category'] }} · SAMPLE LISTING</p><h1>{{ business['name'] }}</h1><p class="muted">⌖ {{ business['neighborhood'] }}, Patiala</p><p>{{ business['description'] }}</p></div>
+  <div class="rating-panel"><strong>{% if business['average_rating'] %}{{ '%.1f'|format(business['average_rating']) }}{% else %}—{% endif %}</strong><span class="stars">★★★★★</span><small>{{ business['review_count'] }} reviews</small></div>
+</section>
+<div class="two-column">
+  <section class="panel review-panel"><div class="section-head compact"><div><p class="eyebrow">COMMUNITY NOTES</p><h2>Reviews <span class="count">{{ business['review_count'] }}</span></h2></div></div>
+    {% for review in reviews %}
+    <article class="review-card"><div class="review-top"><div class="avatar">{{ review['username'][0]|upper }}</div><div><strong>{{ review['username'] }}</strong><div class="review-meta"><span class="stars">{{ '★' * review['rating'] }}{{ '☆' * (5 - review['rating']) }}</span><span>{{ review['created_at'][:10] }}</span></div></div><span class="member-tag">Patiala · self-declared</span></div><p class="review-body">{{ review['body'] }}</p>
+      {% if review['visit_recorded'] %}<span class="visit-tag">✓ Visit check-in recorded</span>{% endif %}
+      {% if current_user and current_user['id'] != review['user_id'] %}<details class="report-details"><summary>Report this review</summary><form method="post" action="{{ url_for('report_review', review_id=review['id']) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><label>Reason<select name="reason" required><option value="">Choose one</option><option>not based on a real experience</option><option>personal attack</option><option>spam or copied text</option><option>other</option></select></label><label>Details <span class="optional">(optional)</span><textarea name="details" maxlength="500" rows="2"></textarea></label><button class="button button-small" type="submit">Send report</button></form></details>{% endif %}
+    </article>
+    {% else %}<div class="empty-state small-empty"><div class="empty-symbol">✳</div><h3>Be the first to share</h3><p>Helpful reviews describe a real experience with useful specifics.</p></div>{% endfor %}
+  </section>
+  <aside class="side-column">
+    <div class="panel checkin-panel"><p class="eyebrow">VISIT SIGNAL</p><h3>Were you here?</h3><p>A check-in records that you used this demo’s QR flow. It is not proof of residence or purchase.</p><a class="button button-dark full-button" href="{{ url_for('qr_page', business_id=business['id']) }}">View demo QR code</a>{% if checked_in %}<span class="visit-tag checked-tag">✓ Check-in already recorded</span>{% endif %}</div>
+    {% if current_user and not mine %}<div class="panel write-panel"><p class="eyebrow">YOUR EXPERIENCE</p><h3>Write a review</h3><form method="post" action="{{ url_for('submit_review', business_id=business['id']) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><label>Rating<select name="rating" required><option value="">Choose stars</option>{% for rating in range(5, 0, -1) %}<option value="{{ rating }}">{{ rating }} star{{ 's' if rating != 1 }}</option>{% endfor %}</select></label><label>Your review<textarea name="body" minlength="20" maxlength="1000" rows="5" placeholder="Share what you experienced (20–1,000 characters)." required></textarea></label><div class="form-hint">One review per account and business.</div><button class="button button-primary full-button" type="submit">Post review <span>→</span></button></form></div>{% elif current_user and mine %}<div class="panel write-panel"><p class="eyebrow">YOUR EXPERIENCE</p><h3>Thanks for contributing</h3><p>You have already reviewed this sample listing.</p></div>{% else %}<div class="panel write-panel"><p class="eyebrow">JOIN THE CONVERSATION</p><h3>Have a useful tip?</h3><p>Sign in to leave a review or report a concern.</p><a class="button button-primary full-button" href="{{ url_for('login') }}">Sign in to review</a></div>{% endif %}
+  </aside>
+</div>
+{% endblock %}

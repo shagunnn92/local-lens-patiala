@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A Patiala-first review app prototype with transparent trust signals.">
+  <title>{% block title %}LocalLens · Patiala{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="{{ url_for('index') }}"><span class="brand-mark">L</span><span>LocalLens <small>Patiala</small></span></a>
+    <nav aria-label="Main navigation">
+      <a href="{{ url_for('index') }}">Explore</a>
+      {% if current_user and current_user['role'] == 'moderator' %}<a href="{{ url_for('moderation') }}">Moderation</a>{% endif %}
+      {% if current_user %}
+        <span class="nav-user">{{ current_user['username'] }}</span>
+        <form class="inline-form" method="post" action="{{ url_for('logout') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="nav-button" type="submit">Sign out</button></form>
+      {% else %}
+        <a href="{{ url_for('login') }}">Sign in</a><a class="nav-cta" href="{{ url_for('register') }}">Join</a>
+      {% endif %}
+    </nav>
+  </header>
+  <main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}<div class="flash-stack" aria-live="polite">{% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="footer"><span>LocalLens · Patiala</span><span>Prototype using sample listings. City membership is self-declared.</span></footer>
+</body>
+</html>
