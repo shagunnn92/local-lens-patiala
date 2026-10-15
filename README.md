@@ -43,4 +43,6 @@ Sign in with that account and open **Moderation** to review reports and repeated
 
 The included businesses are fictional demo listings. Patiala membership is self-declared. A check-in records completion of the demo flow; it does not prove residence, physical presence, or purchase. The QR code is static and can be shared. Repeated review text is only a review signal and can have false positives.
 
-The app uses Flask's built-in development server and is intended for local demonstration. A public deployment would need production hosting, HTTPS, rate limiting, stronger abuse controls, and a defined data retention and moderation policy.
+The app uses Flask's built-in development server locally. For a public demo, deploy it as a Render Web Service with `pip install -r requirements.txt` as the build command and `gunicorn app:app` as the start command. Set a long random `SECRET_KEY` environment variable in the Render dashboard.
+
+This prototype uses SQLite. Render's free web service has temporary storage, so accounts, reviews, and check-ins can be erased when the service restarts, sleeps, or redeploys. Do not use it for real customer data. Free services may also take about a minute to wake after inactivity.
